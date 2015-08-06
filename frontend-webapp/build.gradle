@@ -46,6 +46,14 @@ dependencies {
     runtime 'javax.servlet:jstl:1.2'
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+}
+
 repositories {
     mavenCentral()
 }

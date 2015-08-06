@@ -1,0 +1,57 @@
+plugins {
+    id "com.moowork.node" version "0.10"
+    id "com.moowork.grunt" version "0.10"
+}
+
+apply plugin: 'war'
+
+node {
+    version = '0.12.2'
+    npmVersion = '2.7.5'
+    download = true
+}
+
+task npmPackages(type: NpmTask) {
+    description = "Install Node.js packages"
+    args = [ 'config', 'set', 'cache', "caches/npm" ]
+    args = [ 'install' ]
+}
+
+task bowerInstall(type: NodeTask) {
+    script = file('node_modules/bower/bin/bower')
+    args = ['install']
+    dependsOn npmPackages
+}
+
+task karma(type: NodeTask) {
+    script = file('node_modules/karma/bin/karma')
+    args = ['start', 'src/test/js/karma.conf.js']
+    dependsOn bowerInstall
+}
+
+dependencies {
+    compile project(':jms')
+    compile project(':model')
+    compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.apache.commons:commons-dbcp2:2.1'
+    compile 'org.springframework:spring-webmvc:4.1.5.RELEASE'
+    compile 'org.springframework.security:spring-security-core:4.0.1.RELEASE'
+    compile 'org.springframework.security:spring-security-core:4.0.1.RELEASE'
+    compile 'org.springframework.security:spring-security-web:4.0.1.RELEASE'
+    compile 'org.springframework.security:spring-security-config:4.0.1.RELEASE'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compile 'org.slf4j:slf4j-simple:1.7.12'
+    runtime 'mysql:mysql-connector-java:5.1.36'
+    runtime 'commons-fileupload:commons-fileupload:1.3'
+    runtime 'javax.servlet:jstl:1.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+war {
+    baseName 'frontend-webapp'
+    dependsOn test
+    dependsOn karma
+}

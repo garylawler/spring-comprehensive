@@ -24,8 +24,8 @@ public class HelloMessageProducer {
     public HelloMessageProducer(HelloHibernateDao helloHibernateDao, JmsTemplate jmsTemplate, MessageCreator messageCreator, @Qualifier("hello.topic") Topic topic) throws InterruptedException {
         this.helloHibernateDao = helloHibernateDao;
         this.jmsTemplate = jmsTemplate;
-        jmsTemplate.setDefaultDestination(topic);
         this.topic = topic;
+        jmsTemplate.setDefaultDestination(topic);
         jmsTemplate.setPubSubDomain(true);
 
         new Thread(new MessageProducerThread(jmsTemplate, messageCreator)).start();
